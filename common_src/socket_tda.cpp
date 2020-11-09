@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "socket_tda.h"
+#include "excepciones.h"
 
 void Socket::crearSocket(struct addrinfo* dir){
 	for (; dir != NULL && fileDescriptor == -1; dir = dir->ai_next){
@@ -32,7 +33,7 @@ Socket::Socket(struct addrinfo* dir){
 
 	crearSocket(dir);
 	if(fileDescriptor == -1){
-		throw std::exception();
+		throw ExceptionSocketCreate("Error al crear Socket");
 	}
 	setsockopt(fileDescriptor, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
 }
@@ -53,26 +54,26 @@ void Socket::connect(struct addrinfo* dir){
 		conectado = conectarse(dir);
 	}
 	if (conectado == -1){
-		throw std::exception();
+		throw ExceptionSocketCreate("Error al crear Socket");
 	}
 }
 
 void Socket::bind(struct addrinfo* dir){
 	if (::bind(fileDescriptor, dir->ai_addr, dir->ai_addrlen) == -1){
-		throw std::exception();
+		throw ExceptionSocketBind("Error al hacer bind en Socket");
 	}
 }
 
 void Socket::listen(int cantListen){
 	if (::listen(fileDescriptor, cantListen) == -1){
-		throw std::exception();
+		throw ExceptionSocketListen("Error al hacer listen en Socket");
 	}
 }
 
 Socket Socket::accept(struct addrinfo* dir){
 	int fd_server = ::accept(fileDescriptor, dir->ai_addr, &(dir->ai_addrlen));
 	if (fd_server == -1){
-		throw std::exception();
+		throw ExceptionSocketAccept("Error al aceptar en el Socket");
 	}
 	return std::move(Socket(fd_server));
 }
@@ -87,7 +88,7 @@ int Socket::send(char* msj, int largo){
 		cant_enviado += aux;
 
 		if(aux == -1){
-			throw std::exception();
+			throw ExceptionSocketSend("Error al enviar a traves del Socket");
 		}else if (aux == 0){
 			break;
 		}
@@ -105,7 +106,7 @@ int Socket::recv(char* msj, int largo){
 		cant_recv += aux;
 
 		if(aux == -1){
-			throw std::exception();
+			throw ExceptionSocketRecive("Error al Recibir a traves del Socket");
 		}else if (aux == 0){
 			break;
 		}
@@ -115,10 +116,6 @@ int Socket::recv(char* msj, int largo){
 
 void Socket::shutdown(int tipo){
 	::shutdown(fileDescriptor, tipo);
-}
-
-void Socket::close(){
-	::close(fileDescriptor);
 }
 
 Socket::~Socket(){

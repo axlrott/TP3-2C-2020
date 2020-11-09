@@ -3,7 +3,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include "server_proto.h"
-#define LONGBUF 50
+#define LONGBUF 64
 
 ServidorProt::ServidorProt(const char* archv): procesador(archv){
 }
@@ -43,6 +43,7 @@ void ServidorProt::enviar(Socket &server,std::string respuesta){
 		server.send(msj, largo);
 		memset(msj, '\0', LONGBUF);
 	}
+	server.shutdown(SHUT_WR);
 }
 
 ServidorProt::~ServidorProt(){

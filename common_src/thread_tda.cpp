@@ -1,5 +1,6 @@
 #include <thread>
 #include <utility>
+#include <iostream>
 #include "thread_tda.h"
 
 Thread::Thread(){

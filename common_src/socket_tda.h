@@ -21,7 +21,6 @@ public:
 	int send(char* msj, int largo);
 	int recv(char* msj, int largo);
 	void shutdown(int tipo);
-	void close();
 	~Socket();
 };
 
