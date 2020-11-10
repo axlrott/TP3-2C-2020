@@ -9,36 +9,43 @@
 #include "../common_src/excepciones.h"
 #include "esperar_exit.h"
 #include "servidores.h"
+#include "server_proto.h"
+#define CANTLISTEN 10
+
+void correrThreads(struct addrinfo* dir, const char* index){
+	Socket socketSrv(dir);
+
+	ServidorProt protocolo(socketSrv, dir, index);
+	protocolo.inicializar(CANTLISTEN);
+
+	Thread* esperarSalida = new EsperarExit();
+	Thread* threadServidor = new Servidores(protocolo);
+
+	esperarSalida->start();
+	threadServidor->start();
+
+	esperarSalida->join();
+	socketSrv.shutdown(SHUT_RDWR);
+	threadServidor->join();
+
+	delete esperarSalida;
+	delete threadServidor;
+}
 
 int main(int argc, char const *argv[]){
 	CrearDir crearDir;
 	char* port = (char*) argv[1];
-	struct addrinfo* dir = crearDir(NULL, port, AI_PASSIVE);
+	struct addrinfo* direccion = crearDir(NULL, port, AI_PASSIVE);
 	try{
-		Socket sock(dir);
-
-		Thread* esperarSalida = new EsperarExit();
-		Thread* threadServidor = new Servidores(sock, dir, argv[2]);
-
-		esperarSalida->start();
-		threadServidor->start();
-
-		esperarSalida->join();
-		sock.shutdown(SHUT_RDWR);
-		threadServidor->join();
-
-		delete esperarSalida;
-		delete threadServidor;
-
-		freeaddrinfo(dir);
+		correrThreads(direccion, argv[2]);
+		freeaddrinfo(direccion);
 	} catch(ExceptionSocket& e){
 		std::cout << e.what() << std::endl;
-		freeaddrinfo(dir);
+		freeaddrinfo(direccion);
 		return 1;
 	} catch(...){
-		freeaddrinfo(dir);
+		freeaddrinfo(direccion);
 		return 1;
 	}
-
 	return 0;
 }

@@ -3,20 +3,19 @@
 
 #include "../common_src/thread_tda.h"
 #include "../common_src/socket_tda.h"
-#include "server_proto.h"
+#include "monitor.h"
 
 class SrvThread : public Thread {
 private:
-	Socket servidor;
-	struct addrinfo* direccion;
-	ServidorProt &prototipo;
+	Socket srv;
+	Monitor &monitor;
 	bool is_alive = true;
 public:
-	SrvThread(Socket &sk, struct addrinfo* dir, ServidorProt &prot);
-	void run();
+	SrvThread(ServidorProt &prt, Monitor &mtr): srv(prt.accept()), monitor(mtr) {}
+	virtual void run() override;
 	void stop();
 	bool is_dead();
-	~SrvThread();
+	~SrvThread() {}
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <netdb.h>
 #include <string.h>
 #include <unistd.h>
+#include <utility>
 #include "socket_tda.h"
 #include "excepciones.h"
 
@@ -33,7 +34,7 @@ Socket::Socket(struct addrinfo* dir){
 
 	crearSocket(dir);
 	if(fileDescriptor == -1){
-		throw ExceptionSocketCreate("Error al crear Socket");
+		throw ExceptionSocket(__func__);
 	}
 	setsockopt(fileDescriptor, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
 }
@@ -54,26 +55,26 @@ void Socket::connect(struct addrinfo* dir){
 		conectado = conectarse(dir);
 	}
 	if (conectado == -1){
-		throw ExceptionSocketCreate("Error al crear Socket");
+		throw ExceptionSocket(__func__);
 	}
 }
 
 void Socket::bind(struct addrinfo* dir){
 	if (::bind(fileDescriptor, dir->ai_addr, dir->ai_addrlen) == -1){
-		throw ExceptionSocketBind("Error al hacer bind en Socket");
+		throw ExceptionSocket(__func__);
 	}
 }
 
 void Socket::listen(int cantListen){
 	if (::listen(fileDescriptor, cantListen) == -1){
-		throw ExceptionSocketListen("Error al hacer listen en Socket");
+		throw ExceptionSocket(__func__);
 	}
 }
 
 Socket Socket::accept(struct addrinfo* dir){
 	int fd_server = ::accept(fileDescriptor, dir->ai_addr, &(dir->ai_addrlen));
 	if (fd_server == -1){
-		throw ExceptionSocketAccept("Error al aceptar en el Socket");
+		throw ExceptionSocketAccept("ERROR DE SOCKET EN FUNCION: accept()");
 	}
 	return std::move(Socket(fd_server));
 }
@@ -88,7 +89,7 @@ int Socket::send(char* msj, int largo){
 		cant_enviado += aux;
 
 		if(aux == -1){
-			throw ExceptionSocketSend("Error al enviar a traves del Socket");
+			throw ExceptionSocket(__func__);
 		}else if (aux == 0){
 			break;
 		}
@@ -106,7 +107,7 @@ int Socket::recv(char* msj, int largo){
 		cant_recv += aux;
 
 		if(aux == -1){
-			throw ExceptionSocketRecive("Error al Recibir a traves del Socket");
+			throw ExceptionSocket(__func__);
 		}else if (aux == 0){
 			break;
 		}

@@ -1,22 +1,24 @@
 #include <iostream>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <string>
 #include <sstream>
 #include <string.h>
-#include <sys/socket.h>
 #include "server_proto.h"
 #define LONGBUF 64
 
-ServidorProt::ServidorProt(const char* archv): procesador(archv){
+void ServidorProt::inicializar(int listen){
+	socket.bind(direccion);
+	socket.listen(listen);
 }
 
-void ServidorProt::initSocket(Socket &sock, struct addrinfo* dir, int listen){
-	sock.bind(dir);
-	sock.listen(listen);
+Socket ServidorProt::accept(){
+	return (socket.accept(direccion));
 }
 
 std::string ServidorProt::recibir(Socket &server){
 	bool continuar = true;
 	std::string protocolo;
-	std::string aux;
 	char buffer[LONGBUF+1];
 	memset(buffer, '\0', LONGBUF+1);
 
@@ -26,11 +28,11 @@ std::string ServidorProt::recibir(Socket &server){
 		memset(buffer, '\0', LONGBUF+1);
 		continuar = (cant == LONGBUF);
 	}
-	std::string respuesta = procesador(protocolo);
+	std::string respuesta = dProto(protocolo);
 	return respuesta;
 }
 
-void ServidorProt::enviar(Socket &server,std::string respuesta){
+void ServidorProt::enviar(Socket &server, const std::string &respuesta){
 	std::stringstream stream;
 	stream << respuesta;
 	stream.seekp(0);
@@ -44,8 +46,4 @@ void ServidorProt::enviar(Socket &server,std::string respuesta){
 		memset(msj, '\0', LONGBUF);
 	}
 	server.shutdown(SHUT_WR);
-}
-
-ServidorProt::~ServidorProt(){
-
 }

@@ -2,64 +2,27 @@
 #define EXCEPCIONES
 
 #include <iostream>
+#include <exception>
+#include <string>
 
 class ExceptionSocket : public std::exception{
 protected:
-	int numero;
-	std::string msj;
+	std::string msj_error;
+	std::string sErrorno;
+	std::string funcion;
 public:
-	virtual const char* what() const throw(){
-		return msj.c_str();
-	}
+	explicit ExceptionSocket(const char* func);
+	virtual const char* what() const noexcept;
+	virtual ~ExceptionSocket() noexcept {}
 };
 
-class ExceptionSocketCreate : public ExceptionSocket{
+class ExceptionSocketAccept : public std::exception{
+protected:
+	std::string msj_error;
 public:
-	ExceptionSocketCreate(std::string error_msj){
-		msj = error_msj;
-	}
-};
-
-class ExceptionSocketConnect : public ExceptionSocket{
-public:
-	ExceptionSocketConnect(std::string error_msj){
-		msj = error_msj;
-	}
-};
-
-class ExceptionSocketBind : public ExceptionSocket{
-public:
-	ExceptionSocketBind(std::string error_msj){
-		msj = error_msj;
-	}
-};
-
-class ExceptionSocketListen : public ExceptionSocket{
-public:
-	ExceptionSocketListen(std::string error_msj){
-		msj = error_msj;
-	}
-};
-
-class ExceptionSocketAccept : public ExceptionSocket{
-public:
-	ExceptionSocketAccept(std::string error_msj){
-		msj = error_msj;
-	}
-};
-
-class ExceptionSocketSend : public ExceptionSocket{
-public:
-	ExceptionSocketSend(std::string error_msj){
-		msj = error_msj;
-	}
-};
-
-class ExceptionSocketRecive : public ExceptionSocket{
-public:
-	ExceptionSocketRecive(std::string error_msj){
-		msj = error_msj;
-	}
+	explicit ExceptionSocketAccept(const char* msj): msj_error(msj) {}
+	virtual const char* what() const noexcept;
+	virtual ~ExceptionSocketAccept() noexcept {}
 };
 
 #endif

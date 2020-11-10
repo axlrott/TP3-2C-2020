@@ -9,17 +9,21 @@
 
 int main(int argc, char const *argv[]){
 	CrearDir crearDir;
-	ClienteProt enviador;
 	char* host = (char*) argv[1];
 	char* port = (char*) argv[2];
 	struct addrinfo* dir = crearDir(host, port, 0);
 	try{
 		Socket sock(dir);
-		enviador.enviar(sock, dir);
-		enviador.recibir(sock, dir);
+		ClienteProt enviador(sock, dir);
+		enviador.connect();
+		enviador.enviar();
+		enviador.recibir();
 		freeaddrinfo(dir);
 	} catch(ExceptionSocket& e){
 		std::cout << e.what() << std::endl;
+		freeaddrinfo(dir);
+		return 1;
+	} catch(...){
 		freeaddrinfo(dir);
 		return 1;
 	}

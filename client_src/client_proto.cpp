@@ -1,17 +1,21 @@
 #include <iostream>
 #include <sstream>
 #include <string.h>
+#include <string>
 #include <sys/socket.h>
 #include "../common_src/socket_tda.h"
 #include "client_proto.h"
 #define LONGBUF 64
 
-ClienteProt::ClienteProt(){
+void ClienteProt::connect(){
+	socket.connect(direccion);
+	flag = FLAG_CONECT;
 }
 
-void ClienteProt::enviar(Socket &socket, struct addrinfo* dir){
-	socket.connect(dir);
-
+void ClienteProt::enviar(){
+	if (flag != FLAG_CONECT){
+		throw std::exception();
+	}
 	std::stringstream stream;
 	stream << std::cin.rdbuf();
 	stream.seekp(0);
@@ -28,10 +32,12 @@ void ClienteProt::enviar(Socket &socket, struct addrinfo* dir){
 	socket.shutdown(SHUT_WR);
 }
 
-void ClienteProt::recibir(Socket &socket, struct addrinfo* dir){
+void ClienteProt::recibir(){
+	if (flag != FLAG_CONECT){
+		throw std::exception();
+	}
 	bool continuar = true;
 	std::string respuesta;
-	std::string aux;
 	char buffer[LONGBUF+1];
 	memset(buffer, '\0', LONGBUF+1);
 
@@ -43,7 +49,4 @@ void ClienteProt::recibir(Socket &socket, struct addrinfo* dir){
 	}
 	socket.shutdown(SHUT_RD);
 	std::cout << respuesta;
-}
-
-ClienteProt::~ClienteProt(){
 }

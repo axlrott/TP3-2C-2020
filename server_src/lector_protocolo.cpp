@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <string>
 #include "lector_protocolo.h"
 
 LectorProtocolo::LectorProtocolo(std::string ingreso){
@@ -8,6 +9,8 @@ LectorProtocolo::LectorProtocolo(std::string ingreso){
 
 	stream >> metodo;
 	stream >> recurso;
+	stream >> protocolo;
+	std::getline(stream, msj, '\n');
 
 	if (metodo == post){
 		std::getline(stream, msj, '\n');
@@ -26,10 +29,10 @@ std::string LectorProtocolo::getRecurso(){
 	return recurso;
 }
 
-std::string LectorProtocolo::getMensaje(){
-	return msj;
+std::string LectorProtocolo::getProtocolo(){
+	return protocolo;
 }
 
-LectorProtocolo::~LectorProtocolo(){
-
+std::string LectorProtocolo::getMensaje(){
+	return msj;
 }

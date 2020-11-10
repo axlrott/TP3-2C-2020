@@ -5,9 +5,9 @@
 
 class EsperarExit : public Thread { 
 public:
-	EsperarExit();
+	EsperarExit() {}
 	virtual void run() override;
-	~EsperarExit();
+	~EsperarExit() {}
 };
 
 #endif

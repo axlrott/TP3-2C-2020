@@ -6,19 +6,16 @@
 #include "../common_src/socket_tda.h"
 #include "server_proto.h"
 #include "servidor_thread.h"
+#include "vector_server_threads.h"
 
 class Servidores : public Thread {
 private:
-	Socket &socket;
-	struct addrinfo* direcciones;
-	ServidorProt prototipo;
-	std::vector<SrvThread*> conexiones;
-	void revisarConexiones();
-	void limpiarConexiones();
+	ServidorProt &prototipo;
+	VectorSrvTh conexiones;
 public:
-	Servidores(Socket &sk, struct addrinfo* dir, const char* archv);
+	explicit Servidores(ServidorProt &prt): prototipo(prt) {}
 	virtual void run() override;
-	~Servidores();
+	~Servidores() {}
 };
 
 #endif
