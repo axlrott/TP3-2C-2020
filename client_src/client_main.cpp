@@ -1,30 +1,18 @@
 #include <iostream>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include "../common_src/socket_tda.h"
-#include "../common_src/crear_dir.h"
-#include "../common_src/excepciones.h"
-#include "client_proto.h"
+#include "client_corredor.h"
 
 int main(int argc, char const *argv[]){
-	CrearDir crearDir;
+	ClCorredor correrCliente;
 	char* host = (char*) argv[1];
 	char* port = (char*) argv[2];
-	struct addrinfo* dir = crearDir(host, port, 0);
 	try{
-		Socket sock(dir);
-		ClienteProt enviador(sock, dir);
-		enviador.connect();
-		enviador.enviar();
-		enviador.recibir();
-		freeaddrinfo(dir);
-	} catch(ExceptionSocket& e){
+		int ret = correrCliente(host, port);
+		return ret;
+	} catch(std::exception &e){
 		std::cout << e.what() << std::endl;
-		freeaddrinfo(dir);
 		return 1;
 	} catch(...){
-		freeaddrinfo(dir);
+		std::cout << "Error desconocido" << std::endl;
 		return 1;
 	}
 	return 0;

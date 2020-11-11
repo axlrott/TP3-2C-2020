@@ -3,6 +3,11 @@
 
 #include <iostream>
 
+/*Clase que representa un Socket y todas sus funciones, al crear
+un socket y hacer connect, se va a iterar la addrinfo pasada hasta
+encontrar una con la que pueda conectarse, en caso de error se hara
+un throw de ExceptionSocket, excepto en accept que lanzara su propia
+excepcion del tipo ExceptSocketAccept*/
 class Socket{
 private:
 	int fileDescriptor;

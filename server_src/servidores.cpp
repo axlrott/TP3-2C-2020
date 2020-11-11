@@ -8,19 +8,18 @@
 #include "vector_server_threads.h"
 
 void Servidores::run(){
-	Monitor monitor(prototipo);
+	Monitor monitor(protocolo);
 	try{
 		while (true){
-			SrvThread* new_thread = new SrvThread(prototipo, monitor);
+			SrvThread* new_thread = new SrvThread(protocolo, monitor);
 			conexiones.agregarThread(new_thread);
 			new_thread->start();
 			conexiones.revisarThreads();
 		}
-	} catch (ExceptionSocketAccept& e){
+	} catch (ExceptionSocketAccept &e){
 		conexiones.limpiarThreads();
-	} catch (std::exception& e){
+	} catch (std::exception &e){
 		std::cout << e.what() << std::endl;
 		conexiones.limpiarThreads();
-		throw;
 	}
 }

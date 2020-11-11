@@ -31,26 +31,17 @@ std::string DiccProto::post(const std::string &rec, const std::string &msj){
 	return (html + OK + msj);
 }
 
-DiccProto::DiccProto(const char* nombre_archv){
+DiccProto::DiccProto(char* nombre_archv){
 	std::string msjIndex;
 	std::ifstream archv;
 	archv.open(nombre_archv);
 	std::getline(archv, msjIndex, '\0');
 	recursos["/"] = msjIndex;
-	archv.close();
 }
 
-void imprimirLinea(std::string &cadena){
-	std::string::iterator comienzo = cadena.begin();
-	std::string::iterator final = cadena.end();
-	std::string::iterator fin = std::find(comienzo, final, '\n');
-	std::string primer_linea(cadena.begin(), fin);
-	std::cout << primer_linea << std::endl;
-}
-
-std::string DiccProto::operator()(std::string &protocolo){
-	imprimirLinea(protocolo);
+std::string DiccProto::operator()(const std::string &protocolo){
 	LectorProtocolo lector(protocolo);
+	std::cout << lector.getPrimerLinea() << std::endl;
 	html = lector.getProtocolo();
 	if (lector.getMetodo() == GET){
 		return get(lector.getRecurso());

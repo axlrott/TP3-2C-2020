@@ -3,14 +3,20 @@
 #include <string>
 #include "lector_protocolo.h"
 
+void LectorProtocolo::setPrimerLinea(std::stringstream &stream){
+	std::getline(stream, primer_linea, '\n');
+	stream.seekg(0);
+}
+
 LectorProtocolo::LectorProtocolo(std::string ingreso){
 	std::string post = "POST";
 	std::stringstream stream(ingreso);
+	setPrimerLinea(stream);
 
 	stream >> metodo;
 	stream >> recurso;
 	stream >> protocolo;
-	std::getline(stream, msj, '\n');
+	stream.seekg(0);
 
 	if (metodo == post){
 		std::getline(stream, msj, '\n');
@@ -19,6 +25,10 @@ LectorProtocolo::LectorProtocolo(std::string ingreso){
 		}
 		std::getline(stream, msj, '\0');
 	}
+}
+
+std::string LectorProtocolo::getPrimerLinea(){
+	return primer_linea;
 }
 
 std::string LectorProtocolo::getMetodo(){

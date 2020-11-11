@@ -9,6 +9,7 @@ std::string Monitor::recibirProtected(Socket &socket){
 }
 
 void Monitor::enviarProtected(Socket &socket, std::string respuesta){
+	//REVISAR: No creo que sea necesario este mutex.
 	std::unique_lock<std::mutex> lck(m);
 	prototipo.enviar(socket, respuesta);
 }

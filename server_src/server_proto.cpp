@@ -7,16 +7,16 @@
 #include "server_proto.h"
 #define LONGBUF 64
 
-void ServidorProt::inicializar(int listen){
-	socket.bind(direccion);
+void SrvProt::inicializar(int listen){
+	socket.bind(dir.get());
 	socket.listen(listen);
 }
 
-Socket ServidorProt::accept(){
-	return (socket.accept(direccion));
+Socket SrvProt::accept(){
+	return (socket.accept(dir.get()));
 }
 
-std::string ServidorProt::recibir(Socket &server){
+std::string SrvProt::recibir(Socket &server){
 	bool continuar = true;
 	std::string protocolo;
 	char buffer[LONGBUF+1];
@@ -32,7 +32,7 @@ std::string ServidorProt::recibir(Socket &server){
 	return respuesta;
 }
 
-void ServidorProt::enviar(Socket &server, const std::string &respuesta){
+void SrvProt::enviar(Socket &server, const std::string &respuesta){
 	std::stringstream stream;
 	stream << respuesta;
 	stream.seekp(0);

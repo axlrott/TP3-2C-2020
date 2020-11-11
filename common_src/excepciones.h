@@ -5,6 +5,9 @@
 #include <exception>
 #include <string>
 
+/*Exceptiones utilizadas en el programa, se diferencia
+la clase ExceptionSocket de la ExceptionSocketAccept para
+poder hacerle un catch en la clase Servidores*/
 class ExceptionSocket : public std::exception{
 protected:
 	std::string msj_error;

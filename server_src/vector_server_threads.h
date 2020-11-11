@@ -4,6 +4,10 @@
 #include <vector>
 #include "servidor_thread.h"
 
+/*Vector de Srv Threads en el cual se pueden agregar threads
+al vector, se puede revisar si alguna conexion ya fue finalizada
+y dado el caso liberar la memoria y quitarlo del vector, y limpiar
+que elimina todos los datos en el vector liberando su memoria*/
 class VectorSrvTh {
 private:
 	std::vector<SrvThread*> conexiones;

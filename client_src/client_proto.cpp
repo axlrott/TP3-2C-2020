@@ -7,15 +7,11 @@
 #include "client_proto.h"
 #define LONGBUF 64
 
-void ClienteProt::connect(){
-	socket.connect(direccion);
-	flag = FLAG_CONECT;
+void ClienteProt::conectar(){
+	socket.connect(direccion.get());
 }
 
 void ClienteProt::enviar(){
-	if (flag != FLAG_CONECT){
-		throw std::exception();
-	}
 	std::stringstream stream;
 	stream << std::cin.rdbuf();
 	stream.seekp(0);
@@ -33,9 +29,6 @@ void ClienteProt::enviar(){
 }
 
 void ClienteProt::recibir(){
-	if (flag != FLAG_CONECT){
-		throw std::exception();
-	}
 	bool continuar = true;
 	std::string respuesta;
 	char buffer[LONGBUF+1];
@@ -49,4 +42,10 @@ void ClienteProt::recibir(){
 	}
 	socket.shutdown(SHUT_RD);
 	std::cout << respuesta;
+}
+
+void ClienteProt::operator()(){
+	conectar();
+	enviar();
+	recibir();
 }
