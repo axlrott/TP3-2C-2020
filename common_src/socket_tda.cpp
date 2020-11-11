@@ -74,7 +74,7 @@ void Socket::listen(int cantListen){
 Socket Socket::accept(struct addrinfo* dir){
 	int fd_server = ::accept(fileDescriptor, dir->ai_addr, &(dir->ai_addrlen));
 	if (fd_server == -1){
-		throw ExceptionSocketAccept("ERROR DE SOCKET EN FUNCION: accept()");
+		throw ExceptionSocketAccept(__func__);
 	}
 	return std::move(Socket(fd_server));
 }

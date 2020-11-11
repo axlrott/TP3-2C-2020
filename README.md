@@ -45,21 +45,42 @@ Esta clase va a crear una **Direccion**, luego un **Socket** con esa **Direccion
 
 #### Lector Protocolo:
 
-#### Diccionario Protocolo
+El **Lector Protocolo** lo que va a hacer al crearse es recibir un string que va a representar al protocolo HTTP completo y lo va a parsear para poder guardar dentro de si mismo toda la informacion util, como la primer linea, el metodo y el recurso al que se llama, y en caso de llamarse al metodo POST se guardara tambien el body. A esta clase se le va a poder pedir la informacion que guardo del protocolo, como la primer linea del protocolo, el metodo, el recurso y el body.
+
+#### Diccionario Protocolo:
+
+Esta clase al crearse va a pedir el nombre de un archivo el cual utilizara como index (lo guardara como el body del "/"),
+luego al llamarlo como funcion y pasandole un protocolo HTTP utilizara el **Lector Protocolo** para poder sacar solo la informacion util y vera que hacer en caso de que el metodo sea GET buscara en el diccionario el recurso al que se le hace GET y si lo encuentra devolvera el mensaje correspondiente y el body, en caso de POST tambien devolvera el mensaje correspondiente, en caso de que se llame a otro metodo tambien se devolvera un mensaje correspondiente al llamado de un metodo que no esta permitido.
 
 #### Server Protocolo:
 
+Esta clase va a servir para almacenar un **Socket**, su **Direccion** asociada y el **Diccionario Protocolo**, el cual inicializara con el nombre del archivo pasado por parametro. Va a contener funciones para inicializar y aceptar con el socket contenido y luego funciones que estan para ser utilizadas con el socket que haya sido devuelto al hacer accept, que son recibir, la cual recibe a traves del socket pasado por parametro un parametro HTTP el cual luego lo pasa por el **Diccionario Protocolo** y devuelve la respuesta correspondiente, la cual luego se deberia devolver utilizando la funcion enviar la cual enviara por el socket pasado por parametro el mensaje que se le haya pasado.
+
 #### Esperar Exit:
+
+Esta clase va a heredar de **Thread** y su funcion va a ser constantemente pedir un caracter por entrada estandar y va a finalizar su ejecucion solo cuando se le haya ingresado el caracter "q".
 
 #### Servidores:
 
+Esta es una clase que hereda de **Thread** y la funcion que va a tener es crear **Servidores Threads**, almacenarlos en el **Vector de Servidores Threads** y luego realizar la limpieza del mismo para ir liberando memoria si algun **Servidor Thread** ya termino su ejecucion. Esto se hara constantemente hasta que de parte del **Servidor Thread** se lance una **ExceptionSocketAccept**, a la cual se le hara un catch y se limpiara todo el **Vector de Servidores Threads** para liberar memoria y se finalizara la ejecucion.
+
 #### Monitor:
+
+La clase monitor va a recibir un **Server Protocolo** y su funcion va a hacer es ejecutar las funciones ***enviar()*** y ***recibir()*** utilizando un mutex para evitar alguna race condition.
 
 #### Servidores Threads:
 
+Esta clase va recibir un monitor y un socket al ser creada y seteara su funcion is_alive como true. Va a guardar el socket recibido al hacer el ***accept()*** del socket que recibio por parametro y mediante el monitor va a recibir con el socket guardado y luego va a enviar mediante el monitor a traves del socket lo que habia recibido anteriormente, al finalizar esto dejara su valor de is_alive como false.
+
 #### Vector de Servidores Threads:
 
+Esta clase contiene un vector de punteros a **Servidores Threads** al cual le puedo agregar un nuevo puntero, puedo hacer una revision en la cual si un **Servidor Thread** ya termino de correr puedo hacer su respectivo ***join()*** y liberar su memoria y por ultimo tambien tengo una funcion donde limpio todo el vector haciendo sus respectivos ***join()*** y liberando la memoria de todo lo que haya en el vector.
+
 ### Excepciones:
+
+Las excepciones que cree van a recibir el nombre de la funcion en la que se genero el error y luego van a crear el mensaje de error en base a el nombre de la funcion, la clase en la que sucedio el error y el codigo de error.
+Las excepciones creadas son **ExceptionSocket**, **ExceptionSocketAccept** (La cual hereda de **ExceptionSocket**) y **ExceptionDireccion**,
+la clase **ExceptionSocketAccept** fue hecha a parte ya que quiero diferenciarla asi la puedo atrapar en la clase **Servidores** y asi poder salir correctamente, ya que este error seria uno que yo estoy generando al cerrar el socket por fuera del thread.
 
 ### Diagrama:
 
