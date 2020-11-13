@@ -10,7 +10,7 @@ class Direccion{
 private:
 	struct addrinfo* dir;
 public:
-	Direccion(char* host, char* port, int flag);
+	Direccion(const char* host,const char* port, int flag);
 	struct addrinfo* get();
 	~Direccion();
 };

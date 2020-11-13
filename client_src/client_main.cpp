@@ -2,12 +2,9 @@
 #include "client_corredor.h"
 
 int main(int argc, char const *argv[]){
-	ClCorredor correrCliente;
-	char* host = (char*) argv[1];
-	char* port = (char*) argv[2];
 	try{
-		int ret = correrCliente(host, port);
-		return ret;
+		ClCorredor correrCliente;
+		return correrCliente(argv[1], argv[2]);
 	} catch(std::exception &e){
 		std::cout << e.what() << std::endl;
 		return 1;

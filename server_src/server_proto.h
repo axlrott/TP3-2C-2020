@@ -21,7 +21,8 @@ private:
 	Direccion &dir;
 	DiccProto dProto;
 public:
-	SrvProt(Socket &sk, Direccion &d, char* fl): socket(sk), dir(d), dProto(fl) {}
+	SrvProt(Socket &sk, Direccion &d, const char* fl):
+		socket(sk), dir(d), dProto(fl) {}
 	void inicializar(int listen);
 	Socket accept();
 	std::string recibir(Socket &server);

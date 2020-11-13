@@ -3,7 +3,7 @@
 #include <string.h>
 #include "direccion.h"
 
-Direccion::Direccion(char* host, char* port, int flag){
+Direccion::Direccion(const char* host, const char* port, int flag){
 	bool exito;
 	struct addrinfo dir_host;
 	memset(&dir_host, 0, sizeof(struct addrinfo));

@@ -13,7 +13,7 @@
 #include "servidores.h"
 #define CANT_LISTEN 15
 
-int SrvCorredor::operator()(char* port, char* index){
+int SrvCorredor::operator()(const char* port, const char* index) const{
 	try{
 		Direccion direccion(NULL, port, AI_PASSIVE);
 		Socket socketSrv(direccion.get());

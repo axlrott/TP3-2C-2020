@@ -7,7 +7,7 @@ class ClCorredor {
 private:
 public:
 	ClCorredor() {}
-	int operator()(char* host, char* port);
+	int operator()(const char* host, const char* port) const;
 	~ClCorredor() {}
 };
 

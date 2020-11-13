@@ -17,7 +17,7 @@ public:
 	SrvThread(SrvProt &prt, Monitor &mtr): srv(prt.accept()), monitor(mtr) {}
 	virtual void run() override;
 	void stop();
-	bool is_dead();
+	bool is_dead() const;
 	~SrvThread() {}
 };
 

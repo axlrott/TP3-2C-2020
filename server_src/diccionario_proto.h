@@ -16,7 +16,7 @@ private:
 	std::string get(const std::string &recurso);
 	std::string post(const std::string &recurso, const std::string &msj);
 public:
-	explicit DiccProto(char* nombre_archv);
+	explicit DiccProto(const char* nombre_archv);
 	std::string operator()(const std::string &protocolo);
 	~DiccProto() {}
 };

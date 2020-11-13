@@ -10,8 +10,8 @@ la clase ExceptionSocket de la ExceptionSocketAccept para
 poder hacerle un catch en la clase Servidores*/
 class ExceptionSocket : public std::exception{
 protected:
-	char clase[7] = "SOCKET";
 	std::string msj_error;
+	std::string clase = "SOCKET";
 public:
 	ExceptionSocket() {}
 	explicit ExceptionSocket(const char* funcion);
@@ -26,13 +26,23 @@ public:
 };
 
 class ExceptionDireccion : public std::exception{
-protected:
-	char clase[10] = "DIRECCION";
+private:
 	std::string msj_error;
+	std::string clase = "DIRECCION";
 public:
 	explicit ExceptionDireccion(const char* funcion);
 	virtual const char* what() const noexcept;
 	virtual ~ExceptionDireccion() noexcept {}
+};
+
+class ExceptionDiccProto : public std::exception{
+private:
+	std::string msj_error;
+	std::string clase = "DICCIONARIO PROTOCOLO";
+public:
+	explicit ExceptionDiccProto(const char* funcion);
+	virtual const char* what() const noexcept;
+	virtual ~ExceptionDiccProto() noexcept {}
 };
 
 #endif

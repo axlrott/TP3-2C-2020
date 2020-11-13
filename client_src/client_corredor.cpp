@@ -10,7 +10,7 @@
 #include "../common_src/direccion.h"
 #include "../common_src/excepciones.h"
 
-int ClCorredor::operator()(char* host, char* port){
+int ClCorredor::operator()(const char* host, const char* port) const{
 	try{
 		Direccion direccion(host, port, 0);
 		Socket socketCl(direccion.get());

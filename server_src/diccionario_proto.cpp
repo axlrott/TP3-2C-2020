@@ -4,6 +4,7 @@
 #include <string>
 #include "diccionario_proto.h"
 #include "lector_protocolo.h"
+#include "../common_src/excepciones.h"
 #define POST "POST"
 #define GET "GET"
 #define OK " 200 OK\n\n"
@@ -31,10 +32,14 @@ std::string DiccProto::post(const std::string &rec, const std::string &msj){
 	return (html + OK + msj);
 }
 
-DiccProto::DiccProto(char* nombre_archv){
+DiccProto::DiccProto(const char* nombre_archv){
 	std::string msjIndex;
-	std::ifstream archv;
-	archv.open(nombre_archv);
+	std::ifstream archv(nombre_archv);
+
+	if(!archv){
+		throw ExceptionDiccProto(__func__);
+	}
+	
 	std::getline(archv, msjIndex, '\0');
 	recursos["/"] = msjIndex;
 }

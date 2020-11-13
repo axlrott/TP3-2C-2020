@@ -11,7 +11,7 @@ void SrvThread::run(){
 	is_alive = false;
 }
 
-bool SrvThread::is_dead(){
+bool SrvThread::is_dead() const{
 	return !is_alive;
 }
 
