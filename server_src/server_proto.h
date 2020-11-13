@@ -18,11 +18,11 @@ que envia el mensaje ingresado a traves del socket*/
 class SrvProt{
 private:
 	Socket &socket;
-	Direccion &dir;
+	Direccion &direccion;
 	DiccProto dProto;
 public:
-	SrvProt(Socket &sk, Direccion &d, const char* fl):
-		socket(sk), dir(d), dProto(fl) {}
+	SrvProt(Socket &sk, Direccion &dir, const char* archv):
+		socket(sk), direccion(dir), dProto(archv) {}
 	void inicializar(int listen);
 	Socket accept();
 	std::string recibir(Socket &server);

@@ -7,50 +7,54 @@
 #include <utility>
 #include "socket_tda.h"
 #include "excepciones.h"
+#include "direccion.h"
 
-void Socket::crearSocket(struct addrinfo* dir){
-	for (; dir != NULL && fileDescriptor == -1; dir = dir->ai_next){
-		fileDescriptor = socket(dir->ai_family, dir->ai_socktype, dir->ai_protocol);
+void Socket::crearSocket(Direccion &dir){
+	for (; !dir.estaVacia(); dir.sigDir()){
+		fileDesc = socket(dir.getFamily(), dir.getSockType(), dir.getProtocol());
+		if (fileDesc != -1){
+			return;
+		}
 	}
 }
 
-int Socket::conectarse(struct addrinfo* dir){
+int Socket::conectarse(Direccion &dir){
 	int conectado = -1;
-	while (dir != NULL && conectado == -1){
-		dir = dir->ai_next;
-		::close(fileDescriptor);
-		fileDescriptor = -1;
+	while (!dir.estaVacia() && conectado == -1){
+		dir.sigDir();
+		::close(fileDesc);
+		fileDesc = -1;
 		crearSocket(dir);
-		if (dir != NULL){
-			conectado = ::connect(fileDescriptor, dir->ai_addr, dir->ai_addrlen);
+		if (!dir.estaVacia()){
+			conectado = ::connect(fileDesc, dir.getAddr(), dir.getAddrLen());
 		}
 	}
 	return conectado;
 }
 
-Socket::Socket(struct addrinfo* dir){
+Socket::Socket(Direccion &dir){
 	int val = 1;
-	fileDescriptor = -1;
+	fileDesc = -1;
 
 	crearSocket(dir);
-	if(fileDescriptor == -1){
+	if(fileDesc == -1){
 		throw ExceptionSocket(__func__);
 	}
-	setsockopt(fileDescriptor, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
+	setsockopt(fileDesc, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
 }
 
 Socket::Socket(int fd){
-	fileDescriptor = fd;
+	fileDesc = fd;
 }
 
 Socket::Socket(Socket &&other){
-	fileDescriptor = other.fileDescriptor;
-	other.fileDescriptor = -1;
+	fileDesc = other.fileDesc;
+	other.fileDesc = -1;
 }
 
-void Socket::connect(struct addrinfo* dir){
+void Socket::connect(Direccion &dir){
 	int conectado;
-	conectado = ::connect(fileDescriptor, dir->ai_addr, dir->ai_addrlen);
+	conectado = ::connect(fileDesc, dir.getAddr(), dir.getAddrLen());
 	if (conectado == -1){
 		conectado = conectarse(dir);
 	}
@@ -59,20 +63,20 @@ void Socket::connect(struct addrinfo* dir){
 	}
 }
 
-void Socket::bind(struct addrinfo* dir){
-	if (::bind(fileDescriptor, dir->ai_addr, dir->ai_addrlen) == -1){
+void Socket::bind(Direccion &dir){
+	if (::bind(fileDesc, dir.getAddr(), dir.getAddrLen()) == -1){
 		throw ExceptionSocket(__func__);
 	}
 }
 
 void Socket::listen(int cantListen){
-	if (::listen(fileDescriptor, cantListen) == -1){
+	if (::listen(fileDesc, cantListen) == -1){
 		throw ExceptionSocket(__func__);
 	}
 }
 
-Socket Socket::accept(struct addrinfo* dir){
-	int fd_server = ::accept(fileDescriptor, dir->ai_addr, &(dir->ai_addrlen));
+Socket Socket::accept(Direccion &dir){
+	int fd_server = ::accept(fileDesc, dir.getAddr(), &(dir.getAddrLen()));
 	if (fd_server == -1){
 		throw ExceptionSocketAccept(__func__);
 	}
@@ -85,7 +89,7 @@ int Socket::send(char* msj, int largo){
 	while(largo > cant_enviado){
 		int tam = largo - cant_enviado;
 		char* offset = msj + cant_enviado;
-		int aux = ::send(fileDescriptor, offset, tam, MSG_NOSIGNAL);
+		int aux = ::send(fileDesc, offset, tam, MSG_NOSIGNAL);
 		cant_enviado += aux;
 
 		if(aux == -1){
@@ -103,7 +107,7 @@ int Socket::recv(char* msj, int largo){
 	while(largo > cant_recv){
 		int tam = largo - cant_recv;
 		char* offset = msj + cant_recv;
-		int aux = ::recv(fileDescriptor, offset, tam, 0);
+		int aux = ::recv(fileDesc, offset, tam, 0);
 		cant_recv += aux;
 
 		if(aux == -1){
@@ -116,11 +120,11 @@ int Socket::recv(char* msj, int largo){
 }
 
 void Socket::shutdown(int tipo){
-	::shutdown(fileDescriptor, tipo);
+	::shutdown(fileDesc, tipo);
 }
 
 Socket::~Socket(){
-	if (fileDescriptor != -1){
-		::close(fileDescriptor);
+	if (fileDesc != -1){
+		::close(fileDesc);
 	}
 }

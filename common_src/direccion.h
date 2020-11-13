@@ -11,7 +11,13 @@ private:
 	struct addrinfo* dir;
 public:
 	Direccion(const char* host,const char* port, int flag);
-	struct addrinfo* get();
+	void sigDir();
+	int getFamily();
+	int getSockType();
+	int getProtocol();
+	struct sockaddr* getAddr();
+	socklen_t& getAddrLen();
+	bool estaVacia();
 	~Direccion();
 };
 

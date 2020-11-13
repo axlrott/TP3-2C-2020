@@ -6,14 +6,17 @@
 #include "servidor_thread.h"
 #include "monitor.h"
 #include "vector_server_threads.h"
+#define THREADS 1
 
 void Servidores::run(){
 	Monitor monitor(protocolo);
 	try{
 		while (true){
-			SrvThread* new_thread = new SrvThread(protocolo, monitor);
-			conexiones.agregarThread(new_thread);
-			new_thread->start();
+			for (int i = 0; i < THREADS; ++i){
+				SrvThread* new_thread = new SrvThread(protocolo, monitor);
+				conexiones.agregarThread(new_thread);
+				new_thread->start();
+			}
 			conexiones.revisarThreads();
 		}
 	} catch (ExceptionSocketAccept &e){

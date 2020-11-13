@@ -16,7 +16,7 @@
 int SrvCorredor::operator()(const char* port, const char* index) const{
 	try{
 		Direccion direccion(NULL, port, AI_PASSIVE);
-		Socket socketSrv(direccion.get());
+		Socket socketSrv(direccion);
 		SrvProt protocolo(socketSrv, direccion, index);
 		protocolo.inicializar(CANT_LISTEN);
 

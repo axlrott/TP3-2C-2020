@@ -13,7 +13,7 @@
 int ClCorredor::operator()(const char* host, const char* port) const{
 	try{
 		Direccion direccion(host, port, 0);
-		Socket socketCl(direccion.get());
+		Socket socketCl(direccion);
 		ClienteProt enviadorCliente(socketCl, direccion);
 		enviadorCliente();
 		return 0;

@@ -8,7 +8,7 @@ void VectorSrvTh::agregarThread(SrvThread* srvThread){
 
 void VectorSrvTh::revisarThreads(){
 	std::vector<SrvThread*> nuevo_vector;
-	for (SrvThread* conexion : conexiones){
+	for (SrvThread* &conexion : conexiones){
 		if (conexion->is_dead()){
 			conexion->stop();
 			conexion->join();

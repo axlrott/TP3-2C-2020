@@ -17,8 +17,32 @@ Direccion::Direccion(const char* host, const char* port, int flag){
 	}
 }
 
-struct addrinfo* Direccion::get(){
-	return dir;
+void Direccion::sigDir(){
+	dir = dir->ai_next;
+}
+
+int Direccion::getFamily(){
+	return dir->ai_family;
+}
+
+int Direccion::getSockType(){
+	return dir->ai_socktype;
+}
+
+int Direccion::getProtocol(){
+	return dir->ai_protocol;
+}
+
+struct sockaddr* Direccion::getAddr(){
+	return dir->ai_addr;
+}
+
+socklen_t& Direccion::getAddrLen(){
+	return dir->ai_addrlen;
+}
+
+bool Direccion::estaVacia(){
+	return (dir == NULL);
 }
 
 Direccion::~Direccion(){

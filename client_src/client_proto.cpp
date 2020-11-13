@@ -8,7 +8,7 @@
 #define LONGBUF 64
 
 void ClienteProt::conectar(){
-	socket.connect(direccion.get());
+	socket.connect(direccion);
 }
 
 void ClienteProt::enviar(){

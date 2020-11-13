@@ -8,12 +8,12 @@
 #define LONGBUF 64
 
 void SrvProt::inicializar(int listen){
-	socket.bind(dir.get());
+	socket.bind(direccion);
 	socket.listen(listen);
 }
 
 Socket SrvProt::accept(){
-	return (socket.accept(dir.get()));
+	return (socket.accept(direccion));
 }
 
 std::string SrvProt::recibir(Socket &server){

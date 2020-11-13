@@ -2,6 +2,7 @@
 #define SOCKET_T
 
 #include <iostream>
+#include "direccion.h"
 
 /*Clase que representa un Socket y todas sus funciones, al crear
 un socket y hacer connect, se va a iterar la addrinfo pasada hasta
@@ -10,19 +11,19 @@ un throw de ExceptionSocket, excepto en accept que lanzara su propia
 excepcion del tipo ExceptSocketAccept*/
 class Socket{
 private:
-	int fileDescriptor;
+	int fileDesc;
 	explicit Socket(int fd);
-	void crearSocket(struct addrinfo* dir);
-	int conectarse(struct addrinfo* dir);
+	void crearSocket(Direccion &dir);
+	int conectarse(Direccion &dir);
 public:
-	explicit Socket(struct addrinfo* dir);
+	explicit Socket(Direccion &dir);
 	Socket(Socket &&sock);
 	Socket(const Socket& copy) = delete;
 	Socket operator=(const Socket &copy) = delete;
-	void connect(struct addrinfo* dir);
-	void bind(struct addrinfo* dir);
+	void connect(Direccion &dir);
+	void bind(Direccion &dir);
 	void listen(int cantListen);
-	Socket accept(struct addrinfo* dir);
+	Socket accept(Direccion &dir);
 	int send(char* msj, int largo);
 	int recv(char* msj, int largo);
 	void shutdown(int tipo);
