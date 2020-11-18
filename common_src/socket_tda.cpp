@@ -19,7 +19,7 @@ void Socket::crearSocket(Direccion &dir){
 }
 
 int Socket::conectarse(Direccion &dir){
-	int conectado = -1;
+	int conectado = ::connect(fileDesc, dir.getAddr(), dir.getAddrLen());
 	while (!dir.estaVacia() && conectado == -1){
 		dir.sigDir();
 		::close(fileDesc);
@@ -30,6 +30,20 @@ int Socket::conectarse(Direccion &dir){
 		}
 	}
 	return conectado;
+}
+
+int Socket::bindearse(Direccion &dir){
+	int bindeado = ::bind(fileDesc, dir.getAddr(), dir.getAddrLen());
+	while (!dir.estaVacia() && bindeado == -1){
+		dir.sigDir();
+		::close(fileDesc);
+		fileDesc = -1;
+		crearSocket(dir);
+		if (!dir.estaVacia()){
+			bindeado = ::bind(fileDesc, dir.getAddr(), dir.getAddrLen());
+		}
+	}
+	return bindeado;
 }
 
 Socket::Socket(Direccion &dir){
@@ -52,19 +66,22 @@ Socket::Socket(Socket &&other){
 	other.fileDesc = -1;
 }
 
+Socket& Socket::operator=(Socket &&other){
+	fileDesc = other.fileDesc;
+	other.fileDesc = -1;
+	return *this;
+}
+
 void Socket::connect(Direccion &dir){
-	int conectado;
-	conectado = ::connect(fileDesc, dir.getAddr(), dir.getAddrLen());
-	if (conectado == -1){
-		conectado = conectarse(dir);
-	}
+	int conectado = conectarse(dir);
 	if (conectado == -1){
 		throw ExceptionSocket(__func__);
 	}
 }
 
 void Socket::bind(Direccion &dir){
-	if (::bind(fileDesc, dir.getAddr(), dir.getAddrLen()) == -1){
+	int bindeado = bindearse(dir);
+	if (bindeado == -1){
 		throw ExceptionSocket(__func__);
 	}
 }
@@ -80,7 +97,7 @@ Socket Socket::accept(Direccion &dir){
 	if (fd_server == -1){
 		throw ExceptionSocketAccept(__func__);
 	}
-	return std::move(Socket(fd_server));
+	return Socket(fd_server);
 }
 
 int Socket::send(char* msj, int largo){

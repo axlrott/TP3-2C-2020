@@ -7,6 +7,9 @@
 #include "client_proto.h"
 #define LONGBUF 64
 
+ClienteProt::ClienteProt(const char* host, const char* port):
+	direccion(host, port,0), socket(direccion) {}
+
 void ClienteProt::conectar(){
 	socket.connect(direccion);
 }
@@ -16,32 +19,30 @@ void ClienteProt::enviar(){
 	stream << std::cin.rdbuf();
 	stream.seekp(0);
 
-	char msj[LONGBUF];
+	char msj[LONGBUF+1];
 	int largo = LONGBUF;
-	memset(msj, '\0', LONGBUF);
 
 	while (largo == LONGBUF){
 		largo = stream.readsome(msj, LONGBUF);
 		socket.send(msj, largo);
-		memset(msj, '\0', LONGBUF);
 	}
 	socket.shutdown(SHUT_WR);
 }
 
 void ClienteProt::recibir(){
 	bool continuar = true;
-	std::string respuesta;
-	char buffer[LONGBUF+1];
-	memset(buffer, '\0', LONGBUF+1);
+	char respuesta[LONGBUF+1];
+	respuesta[LONGBUF] = '\0';
 
 	while (continuar){
-		int cant = socket.recv(buffer, LONGBUF);
-		respuesta.append(buffer);
-		memset(buffer, '\0', LONGBUF+1);
+		int cant = socket.recv(respuesta, LONGBUF);
+		if (cant < LONGBUF){
+			respuesta[cant] = '\0';
+		}
+		std::cout << respuesta;
 		continuar = (cant == LONGBUF);
 	}
 	socket.shutdown(SHUT_RD);
-	std::cout << respuesta;
 }
 
 void ClienteProt::operator()(){

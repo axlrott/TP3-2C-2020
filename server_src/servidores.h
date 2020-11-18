@@ -1,12 +1,9 @@
 #ifndef SERVIDORES
 #define SERVIDORES
 
-#include <vector>
 #include "../common_src/thread_tda.h"
-#include "../common_src/socket_tda.h"
-#include "server_proto.h"
-#include "servidor_thread.h"
 #include "vector_server_threads.h"
+#include "monitor.h"
 
 /*Clase que hereda de Threads, esta clase la voy a utilizar para
 poder correr los Threads de SrvThread, al aceptar clientes voy a
@@ -17,10 +14,12 @@ a liberar la memoria de todos los Threads del vector y finalizar
 la ejecucion*/
 class Servidores : public Thread {
 private:
-	SrvProt &protocolo;
+	SrvProt &srvProtocolo;
+	Monitor &monitor;
 	VectorSrvTh conexiones;
 public:
-	explicit Servidores(SrvProt &proto): protocolo(proto) {}
+	explicit Servidores(SrvProt &svProt, Monitor &mtr):
+		srvProtocolo(svProt), monitor(mtr) {}
 	virtual void run() override;
 	~Servidores() {}
 };

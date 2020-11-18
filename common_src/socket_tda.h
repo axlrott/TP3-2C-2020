@@ -15,11 +15,13 @@ private:
 	explicit Socket(int fd);
 	void crearSocket(Direccion &dir);
 	int conectarse(Direccion &dir);
+	int bindearse(Direccion &dir);
 public:
 	explicit Socket(Direccion &dir);
 	Socket(Socket &&sock);
 	Socket(const Socket& copy) = delete;
-	Socket operator=(const Socket &copy) = delete;
+	Socket& operator=(const Socket &copy) = delete;
+	Socket& operator=(Socket &&sock);
 	void connect(Direccion &dir);
 	void bind(Direccion &dir);
 	void listen(int cantListen);

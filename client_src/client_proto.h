@@ -12,13 +12,13 @@ luego va a recibir de a 64 bytes y al finalizar va a hacer un shutdown
 de lectura y va a imprimir por salida standar lo que recibio*/
 class ClienteProt{
 private:
-	Socket &socket;
-	Direccion &direccion;
+	Direccion direccion;
+	Socket socket;
 	void conectar();
 	void enviar();
 	void recibir();
 public:
-	ClienteProt(Socket &sk, Direccion &dir): socket(sk), direccion(dir) {}
+	ClienteProt(const char* host, const char* port);
 	void operator()();
 	~ClienteProt() {}
 };

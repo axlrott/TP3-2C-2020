@@ -11,23 +11,22 @@
 #include "server_proto.h"
 #include "esperar_exit.h"
 #include "servidores.h"
+#include "monitor.h"
 #define CANT_LISTEN 15
 
 int SrvCorredor::operator()(const char* port, const char* index) const{
 	try{
-		Direccion direccion(NULL, port, AI_PASSIVE);
-		Socket socketSrv(direccion);
-		SrvProt protocolo(socketSrv, direccion, index);
-		protocolo.inicializar(CANT_LISTEN);
+		Monitor monitor(index);
+		SrvProt servidorProt(port, CANT_LISTEN);
 
 		Thread* esperarSalida = new EsperarExit();
-		Thread* threadServidor = new Servidores(protocolo);
+		Thread* threadServidor = new Servidores(servidorProt, monitor);
 
 		esperarSalida->start();
 		threadServidor->start();
 
 		esperarSalida->join();
-		socketSrv.shutdown(SHUT_RDWR);
+		servidorProt.shutdown();
 		threadServidor->join();
 
 		delete esperarSalida;

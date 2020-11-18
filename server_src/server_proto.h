@@ -17,16 +17,15 @@ DiccProto y va a devolver la respuesta correspondiente,y un enviar
 que envia el mensaje ingresado a traves del socket*/
 class SrvProt{
 private:
-	Socket &socket;
-	Direccion &direccion;
-	DiccProto dProto;
+	Direccion direccion;
+	Socket socket;
 public:
-	SrvProt(Socket &sk, Direccion &dir, const char* archv):
-		socket(sk), direccion(dir), dProto(archv) {}
+	SrvProt(const char* port, int listen);
 	void inicializar(int listen);
 	Socket accept();
 	std::string recibir(Socket &server);
 	void enviar(Socket &server, const std::string &respuesta);
+	void shutdown();
 	~SrvProt() {}
 };
 

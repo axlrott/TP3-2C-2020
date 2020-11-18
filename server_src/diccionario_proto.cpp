@@ -46,7 +46,7 @@ DiccProto::DiccProto(const char* nombre_archv){
 
 std::string DiccProto::operator()(const std::string &protocolo){
 	LectorProtocolo lector(protocolo);
-	std::cout << lector.getPrimerLinea() << std::endl;
+	std::cout << lector.getPrimerLinea();
 	html = lector.getProtocolo();
 	if (lector.getMetodo() == GET){
 		return get(lector.getRecurso());

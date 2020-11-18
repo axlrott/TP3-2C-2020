@@ -12,6 +12,11 @@ void SrvProt::inicializar(int listen){
 	socket.listen(listen);
 }
 
+SrvProt::SrvProt(const char* port, int listen):
+	direccion(NULL, port, AI_PASSIVE), socket(direccion) {
+		inicializar(listen);
+}
+
 Socket SrvProt::accept(){
 	return (socket.accept(direccion));
 }
@@ -20,30 +25,34 @@ std::string SrvProt::recibir(Socket &server){
 	bool continuar = true;
 	std::string protocolo;
 	char buffer[LONGBUF+1];
-	memset(buffer, '\0', LONGBUF+1);
+	buffer[LONGBUF] = '\0';
 
 	while (continuar){
 		int cant = server.recv(buffer, LONGBUF);
+		if (cant < LONGBUF){
+			buffer[cant] = '\0';
+		}
 		protocolo.append(buffer);
-		memset(buffer, '\0', LONGBUF+1);
 		continuar = (cant == LONGBUF);
 	}
-	std::string respuesta = dProto(protocolo);
-	return respuesta;
+	return protocolo;
 }
 
 void SrvProt::enviar(Socket &server, const std::string &respuesta){
 	std::stringstream stream;
 	stream << respuesta;
 	stream.seekp(0);
+
 	char msj[LONGBUF];
 	int largo = LONGBUF;
-	memset(msj, '\0', LONGBUF);
 
 	while (largo == LONGBUF){
 		largo = stream.readsome(msj, LONGBUF);
 		server.send(msj, largo);
-		memset(msj, '\0', LONGBUF);
 	}
 	server.shutdown(SHUT_WR);
+}
+
+void SrvProt::shutdown(){
+	socket.shutdown(SHUT_RDWR);
 }

@@ -11,10 +11,12 @@ mediante el monitor una respuesta que luego es enviada mediante el Monitor*/
 class SrvThread : public Thread {
 private:
 	Socket srv;
+	SrvProt &srvProtocolo;
 	Monitor &monitor;
 	bool is_alive = true;
 public:
-	SrvThread(SrvProt &prt, Monitor &mtr): srv(prt.accept()), monitor(mtr) {}
+	explicit SrvThread(SrvProt &svProt, Monitor &mtr):
+		srv(svProt.accept()), srvProtocolo(svProt), monitor(mtr) {}
 	virtual void run() override;
 	void stop();
 	bool is_dead() const;

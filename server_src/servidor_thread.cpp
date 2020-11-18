@@ -6,8 +6,9 @@
 #include "servidor_thread.h"
 
 void SrvThread::run(){
-	std::string respuesta  = monitor.recibirProtected(srv);
-	monitor.enviarProtected(srv, respuesta);
+	std::string protocolo  = srvProtocolo.recibir(srv);
+	std::string respuesta  = monitor.respuestaProtocolo(protocolo);
+	srvProtocolo.enviar(srv, respuesta);
 	is_alive = false;
 }
 

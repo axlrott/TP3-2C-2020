@@ -12,9 +12,7 @@
 
 int ClCorredor::operator()(const char* host, const char* port) const{
 	try{
-		Direccion direccion(host, port, 0);
-		Socket socketCl(direccion);
-		ClienteProt enviadorCliente(socketCl, direccion);
+		ClienteProt enviadorCliente(host, port);
 		enviadorCliente();
 		return 0;
 	} catch(std::exception &e){

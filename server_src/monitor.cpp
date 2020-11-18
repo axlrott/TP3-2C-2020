@@ -2,14 +2,9 @@
 #include <string>
 #include "monitor.h"
 #include "server_proto.h"
+#include "../common_src/socket_tda.h"
 
-std::string Monitor::recibirProtected(Socket &socket){
+std::string Monitor::respuestaProtocolo(std::string protocolo){
 	std::unique_lock<std::mutex> lck(m);
-	return prototipo.recibir(socket);
-}
-
-void Monitor::enviarProtected(Socket &socket, std::string respuesta){
-	//REVISAR: No creo que sea necesario este mutex.
-	std::unique_lock<std::mutex> lck(m);
-	prototipo.enviar(socket, respuesta);
+	return dProtocolo(protocolo);
 }

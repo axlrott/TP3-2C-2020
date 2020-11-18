@@ -5,6 +5,7 @@
 
 void LectorProtocolo::setPrimerLinea(std::stringstream &stream){
 	std::getline(stream, primer_linea, '\n');
+	primer_linea += '\n';
 	stream.seekg(0);
 }
 
