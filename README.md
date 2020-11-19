@@ -29,7 +29,7 @@ Esta clase va a tomar el host y el puerto pasado por parametro, va a crear la cl
 
 ### Client Corredor:
 
-Esta clase va a recibir un host y un puerto con los que creara una clase **Direccion** y usara esta para crear una clase **Socket** y luego va a utilizar ese **Socket** y esa **Direccion** para crear un **Cliente Protocolo**, el cual luego se llamara como funcion. En caso de que atrape una excepcion del tipo **std::exception** se mostrara por pantalla el mensaje de error y se retornara un 1, en caso de que atrape otro tipo de error se informara que hubo un error desconocido y tambien se retornara 1.
+Esta clase va a recibir un host y un puerto los que se van a usar para crear un **Cliente Protocolo**, el cual luego se llamara como funcion. En caso de que atrape una excepcion del tipo **std::exception** se mostrara por pantalla el mensaje de error y se retornara un 1, en caso de que atrape otro tipo de error se informara que hubo un error desconocido y tambien se retornara 1.
 
 ### Client Protocolo:
 
@@ -43,7 +43,7 @@ Esta clase va a tomar el puerto y el nombre del archivo pasados por parametro, v
 
 ### Server Corredor:
 
-Esta clase va a crear una **Direccion**, luego un **Socket** con esa **Direccion**, luego un **Server Protocolo** con la **Direccion**, el **Socket** y el nombre del archivo pasado por parametro, va a llamar a la funcion para inicializar ese **Server Protocolo** y luego va a crear dos threads: **EsperarExit** y **Servidores**, a este ultimo le pasara el **Server Protocolo** como parametro, luego se hara un ***start()*** de ambos threads, se hara un ***join()*** de EsperarExit y cuando este finalice se hara un ***shutdown()*** de el **Socket** y luego se procedera a hacer un ***join()*** de **Servidores**, luego se eliminaran **EsperarExit** y **Servidores** para liberar memoria, al finalizar se retornara 0, en caso de algun error se retornara el mensaje de error correspondiente y se retornara un 1;
+Esta clase va a crear un **Server Protocolo** con el puerto y la cantidad de listen y va a crear un **Monitor** pasandole el nombre del archivo que va a usar de index y luego va a crear dos threads: **EsperarExit** y **Servidores**, a este ultimo le pasara el **Server Protocolo** y el **Monitor** como parametro, luego se hara un ***start()*** de ambos threads, se hara un ***join()*** de EsperarExit y cuando este finalice se hara un ***shutdown()*** de el **Socket** y luego se procedera a hacer un ***join()*** de **Servidores**, luego se eliminaran **EsperarExit** y **Servidores** para liberar memoria, al finalizar se retornara 0, en caso de algun error se retornara el mensaje de error correspondiente y se retornara un 1;
 
 ### Lector Protocolo:
 
@@ -52,7 +52,7 @@ El **Lector Protocolo** lo que va a hacer al crearse es recibir un string que va
 ### Diccionario Protocolo:
 
 Esta clase al crearse va a pedir el nombre de un archivo el cual utilizara como index (lo guardara como el body del "/"),
-luego al llamarlo como funcion y pasandole un protocolo HTTP utilizara el **Lector Protocolo** para poder sacar solo la informacion util y vera que hacer en caso de que el metodo sea GET buscara en el diccionario el recurso al que se le hace GET y si lo encuentra devolvera el mensaje correspondiente y el body, en caso de POST tambien devolvera el mensaje correspondiente, en caso de que se llame a otro metodo tambien se devolvera un mensaje correspondiente al llamado de un metodo que no esta permitido.
+luego al llamarlo como funcion y pasandole un protocolo HTTP utilizara el **Lector Protocolo** para poder sacar solo la informacion util y vera que hacer en caso de que el metodo sea GET esperara 10 milisegundos y luego buscara en el diccionario el recurso al que se le hace GET y si lo encuentra devolvera el mensaje correspondiente y el body, en caso de POST tambien devolvera el mensaje correspondiente, en caso de que se llame a otro metodo tambien se devolvera un mensaje correspondiente al llamado de un metodo que no esta permitido.
 
 ### Server Protocolo:
 
@@ -68,7 +68,7 @@ Esta es una clase que hereda de **Thread** y la funcion que va a tener es crear 
 
 ### Monitor:
 
-La clase monitor va a recibir un **Server Protocolo** y su funcion va a hacer es ejecutar las funciones ***enviar()*** y ***recibir()*** utilizando un mutex para evitar alguna race condition.
+La clase monitor va a recibir un **Diccionario Protocolo** y su funcion va a hacer ejecutar la funcion principal de **Diccionario Protocolo**, que es llamarse a si misma, con un protocolo y devolver la respuesta, antes de llamar a esa funcion se le hara un mutex para evitar race conditions.
 
 ### Servidores Threads:
 
