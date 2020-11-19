@@ -2,6 +2,8 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <thread>
+#include <chrono>
 #include "diccionario_proto.h"
 #include "lector_protocolo.h"
 #include "../common_src/excepciones.h"
@@ -15,6 +17,11 @@
 #define DESCONOCIDO " es un comando desconocido\n"
 
 std::string DiccProto::get(const std::string &recurso){
+	auto tiempo_espera = std::chrono::milliseconds(10);
+	std::this_thread::sleep_for(tiempo_espera);
+	/*Voy a esperar un tiempo antes de hacer el get y asi evitar
+	posibles race condition en caso de que llegue un POST un poco
+	antes pero casi al mismo tiempo*/
 	if (recursos.count(recurso) == 0){
 		return (html + NOT_FOUND);
 	}
